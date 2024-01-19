@@ -17,40 +17,37 @@ limitations under the License.
 package controller
 
 import (
+	"cola.redis/standalone"
 	"context"
+	"github.com/go-logr/logr"
 
+	redisv1 "cola.redis/api/v1"
+	"cola.redis/controllerutil"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
-
-	redisv1 "cola.redis/api/v1"
 )
 
 // StandaloneReconciler reconciles a Standalone object
 type StandaloneReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	Log    logr.Logger
 }
 
-//+kubebuilder:rbac:groups=redis.cola.redis,resources=standalones,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=redis.cola.redis,resources=standalones/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=redis.cola.redis,resources=standalones/finalizers,verbs=update
-
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the Standalone object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.3/pkg/reconcile
 func (r *StandaloneReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
-
-	// TODO(user): your logic here
-
+	reqLogger := r.Log.WithValues("Request.Namespace", req.Namespace, "Request.Name", req.Name)
+	reqLogger.Info("Reconciling opstree redis controller")
+	instance := &redisv1.Standalone{}
+	//check if cr resource exists with etcd
+	if err := r.Client.Get(context.TODO(), req.NamespacedName, instance); err != nil {
+		return controllerutil.CheckedRequeueWithError(err, reqLogger, "")
+	}
+	//TODO处理失败情况
+	err := standalone.CreateStandaloneRedis(instance)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
 	return ctrl.Result{}, nil
 }
 

@@ -9,9 +9,7 @@ metadata:
     app.kubernetes.io/created-by: kubebuilder
   name: standalone-sample
 spec:
-  # TODO(user): Add fields here
-  #image,imagePullPolicy,resources,
- redisConfigFile: #user.monitoring,storage
- port:
- version:
- resourceReqs:
+  RedisConfig:
+
+  KubernetesConfig:
+  

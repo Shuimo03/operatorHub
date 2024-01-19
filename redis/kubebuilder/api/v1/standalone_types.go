@@ -17,7 +17,6 @@ limitations under the License.
 package v1
 
 import (
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -28,7 +27,15 @@ import (
 type StandaloneSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	RedisConfigFile v1.ConfigMap `json:"redisConfigFile,omitempty"`
+	RedisConfig      RedisConfig      `json:"RedisConfig,omitempty"`
+	KubernetesConfig KubernetesConfig `json:"KubernetesConfig"`
+}
+
+type RedisConfig struct {
+	MaxmemoryPolicy string `json:"maxmemoryPolicy,omitempty"`
+	Client          string `json:"client,omitempty"`
+	MaxMmemory      string `json:"maxMmemory,omitempty"`
+	Persistence     string `json:"persistence,omitempty"`
 }
 
 // StandaloneStatus defines the observed state of Standalone
@@ -42,6 +49,10 @@ type StandaloneStatus struct {
 
 // Standalone is the Schema for the standalones API
 type Standalone struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty"`
+	Spec              StandaloneSpec   `json:"spec"`
+	Status            StandaloneStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
