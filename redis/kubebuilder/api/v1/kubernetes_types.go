@@ -5,7 +5,7 @@ import corev1 "k8s.io/api/core/v1"
 type KubernetesConfig struct {
 	Image           string                       `json:"image"`
 	ImagePullPolicy corev1.PullPolicy            `json:"imagePullPolicy,omitempty"`
-	Storage         Storage                      `json:"storage"`
+	Storage         Storage                      `json:"storage,omitempty"`
 	Resources       *corev1.ResourceRequirements `json:"resources,omitempty"`
 	Service         string                       `json:"service,omitempty"`
 }

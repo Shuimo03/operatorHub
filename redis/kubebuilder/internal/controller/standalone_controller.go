@@ -43,7 +43,7 @@ func (r *StandaloneReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	if err := r.Client.Get(context.TODO(), req.NamespacedName, instance); err != nil {
 		return controllerutil.CheckedRequeueWithError(err, reqLogger, "")
 	}
-	//TODO处理失败情况
+	//TODO 处理失败情况
 	err := standalone.CreateStandaloneRedis(instance)
 	if err != nil {
 		return ctrl.Result{}, err

@@ -1,6 +1,7 @@
 package kubernetesutil
 
 import (
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -14,6 +15,14 @@ func generateK8sConfig() (*rest.Config, error) {
 	return kubeConfig.ClientConfig()
 }
 
-func GenerateKubeClient() {
-
+func GenerateKubeClient() (kubernetes.Clientset, error) {
+	config, cfgError := generateK8sConfig()
+	if cfgError != nil {
+		return kubernetes.Clientset{}, cfgError
+	}
+	client, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return kubernetes.Clientset{}, err
+	}
+	return *client, nil
 }
