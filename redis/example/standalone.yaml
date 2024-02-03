@@ -1,0 +1,7 @@
+apiVersion: redis.cola.redis/v1
+kind: Standalone #缩写为rs
+metadata:
+  name: standalone-sample
+spec:
+  KubernetesConfig:
+    image: m.daocloud.io/quay.io/opstree/redis:v5.0.0

@@ -1,15 +1,15 @@
 apiVersion: redis.cola.redis/v1
-kind: Standalone
+kind: Standalone #缩写为rs
 metadata:
-  labels:
-    app.kubernetes.io/name: standalone
-    app.kubernetes.io/instance: standalone-sample
-    app.kubernetes.io/part-of: kubebuilder
-    app.kubernetes.io/managed-by: kustomize
-    app.kubernetes.io/created-by: kubebuilder
   name: standalone-sample
 spec:
-  RedisConfig:
-
   KubernetesConfig:
     image: m.daocloud.io/quay.io/opstree/redis:v5.0.0
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 1Gi
